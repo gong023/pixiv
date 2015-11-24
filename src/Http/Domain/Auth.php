@@ -4,20 +4,19 @@ namespace Pixiv\Http\Domain;
 
 use Pixiv\Http\Delegater;
 use Pixiv\Entity\Auth as AuthEntity;
+use TinyConfig\TinyConfig;
 
 class Auth
 {
     const BASE_URL = 'https://oauth.secure.pixiv.net';
+    const REFERER = 'http://www.pixiv.net';
 
     private $delegater;
 
-    public function __construct()
+    public function __construct(Delegater $delegater)
     {
-        $this->delegater = new Delegater(static::BASE_URL, [
-            'Referer' => 'http://www.pixiv.net',
-        ]);
-        $config = require __DIR__ . '/../../Config.php';
-        $this->config = $config['auth_token'];
+        $this->delegater = $delegater;
+        $this->config = TinyConfig::get('initial_setting');
     }
 
     public function token()

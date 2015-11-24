@@ -15,7 +15,7 @@ class Delegater
     {
         $options = array_merge($options, [
             'headers' => [
-                'User-Agent' => 'PixivIOSApp/5.8.3',
+                'User-Agent'      => 'PixivIOSApp/5.8.3',
                 'Accept-Language' => 'ja-JP',
             ],
         ]);
@@ -31,9 +31,10 @@ class Delegater
         return $this->sendWithCheck('POST', $path, $options);
     }
 
-    public function get($path, $parameter = [], $options)
+    public function get($path, $parameter = [], $options = [])
     {
         $parameter = http_build_query($parameter);
+        return $this->sendWithCheck('GET', "{$path}?{$parameter}", $options);
     }
 
     private function sendWithCheck($method, $uri, $options)
