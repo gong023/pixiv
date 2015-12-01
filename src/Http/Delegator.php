@@ -33,9 +33,8 @@ class Delegator
 
     public function get($path, $parameter = [], $options = [])
     {
-        $parameter = http_build_query($parameter);
+        $parameter = urlencode(http_build_query($parameter));
         $s = $this->sendWithCheck('GET', "{$path}?{$parameter}", $options);
-        $h = $s->getHeaders();
 
         return $s;
     }

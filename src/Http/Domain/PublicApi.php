@@ -2,12 +2,13 @@
 
 namespace Pixiv\Http\Domain;
 
+use GuzzleHttp\Client;
 use Pixiv\Http\Delegator;
 use TinyConfig\TinyConfig;
 
 class PublicApi
 {
-    const BASE_URI = 'https://public-api.secure.pixiv.net';
+    const BASE_URI = 'https://public-api.secure.pixiv.net/';
     const REFERER = 'http://spapi.pixiv-app.net/';
 
     public function __construct(Delegator $delegater)
@@ -19,8 +20,8 @@ class PublicApi
         $page               = 1,
         $perPage            = 50,
         $mode               = 'daily',
-        $includeStats       = true,
-        $includeSanityLevel = true,
+        $includeStats       = 'true',
+        $includeSanityLevel = 'true',
         $imageSizes         = 'px_128x128,px_480mw,large',
         $profileImageSizes  = 'px_170x170,px_50x50'
     ) {
@@ -30,14 +31,38 @@ class PublicApi
             'mode'                 => $mode,
             'include_stats'        => $includeStats,
             'include_sanity_level' => $includeSanityLevel,
-            'image_sizes'          => urlencode($imageSizes),
-            'profile_image_sizes'  => urlencode($profileImageSizes),
+            'image_sizes'          => $imageSizes,
+            'profile_image_sizes'  => $profileImageSizes,
         ];
 
         $contents = $this->delegeter->get('/v1/ranking/all', $param, [
             'headers' => [
-                'User-Agent'      => 'PixivIOSApp/5.8.3',
-                'Accept-Language' => 'ja-JP',
+                'Authorization' => 'Bearer ' . TinyConfig::get('token'),
+            ]
+        ])->getBody()->getContents();
+
+        return json_decode($contents, true);
+    }
+
+    public function following(
+        $page               = 1,
+        $perPage            = 30,
+        $includeStats       = 'true',
+        $includeSanityLevel = 'true',
+        $imageSizes         = 'px_128x128,px_480mw,large',
+        $profileImageSizes  = 'px_170x170,px_50x50'
+    ) {
+        $params = [
+            'include_sanity_level' => $includeSanityLevel,
+            'profile_image_sizes'  => $profileImageSizes,
+            'per_page'             => $perPage,
+            'include_stats'        => $includeStats,
+            'image_sizes'          => $imageSizes,
+            'page'                 => $page,
+        ];
+
+        $contents = $this->delegeter->get('/v1/me/following/works.json', $params, [
+            'headers' => [
                 'Authorization' => 'Bearer ' . TinyConfig::get('token'),
             ]
         ])->getBody()->getContents();

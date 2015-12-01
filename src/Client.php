@@ -36,11 +36,12 @@ class Client
 
     public function getRankingAll()
     {
-        return (new Retry())
-            ->beforeEach(function() {
-                TinyConfig::set('token', $this->getAccessToken());
-            })
-            ->retry(1, function() { return $this->publicApi->rankingAll(); });
+        return $this->retryWithToken(1, function() { return $this->publicApi->rankingAll(); });
+    }
+
+    public function getFollowing()
+    {
+        return $this->retryWithToken(1, function() { return $this->publicApi->following(); });
     }
 
     public function getApi($domain)
@@ -49,6 +50,15 @@ class Client
         $delegator = new Delegator(constant("{$klass}::BASE_URI"), [constant("{$klass}::REFERER")]);
 
         return new $klass($delegator);
+    }
+
+    private function retryWithToken($times, $proc)
+    {
+        return (new Retry())
+            ->beforeEach(function() {
+                TinyConfig::set('token', $this->getAccessToken());
+            })
+            ->retry($times, $proc);
     }
 }
 
