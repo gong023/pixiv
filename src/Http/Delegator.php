@@ -9,7 +9,7 @@ use Pixiv\Http\Exception\ClientErrorException;
 use GuzzleHttp\Exception\ClientException as OriginClientException;
 use GuzzleHttp\Exception\ServerException as OriginServerException;
 
-class Delegater
+class Delegator
 {
     public function __construct($baseUri, $options = [])
     {
@@ -34,7 +34,10 @@ class Delegater
     public function get($path, $parameter = [], $options = [])
     {
         $parameter = http_build_query($parameter);
-        return $this->sendWithCheck('GET', "{$path}?{$parameter}", $options);
+        $s = $this->sendWithCheck('GET', "{$path}?{$parameter}", $options);
+        $h = $s->getHeaders();
+
+        return $s;
     }
 
     private function sendWithCheck($method, $uri, $options)

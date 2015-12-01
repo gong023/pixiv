@@ -2,14 +2,15 @@
 
 namespace Pixiv\Http\Domain;
 
-use Pixiv\Http\Delegater;
+use Pixiv\Http\Delegator;
+use TinyConfig\TinyConfig;
 
 class PublicApi
 {
-    const BASE_URI = 'https://public-api.secure.pixiv.net/v1';
+    const BASE_URI = 'https://public-api.secure.pixiv.net';
     const REFERER = 'http://spapi.pixiv-app.net/';
 
-    public function __construct(Delegater $delegater)
+    public function __construct(Delegator $delegater)
     {
         $this->delegeter = $delegater;
     }
@@ -17,7 +18,7 @@ class PublicApi
     public function rankingAll(
         $page               = 1,
         $perPage            = 50,
-        $mode               = 'male',
+        $mode               = 'daily',
         $includeStats       = true,
         $includeSanityLevel = true,
         $imageSizes         = 'px_128x128,px_480mw,large',
@@ -33,7 +34,13 @@ class PublicApi
             'profile_image_sizes'  => urlencode($profileImageSizes),
         ];
 
-        $contents = $this->delegeter->get('/ranking/all', $param)->getBody()->getContents();
+        $contents = $this->delegeter->get('/v1/ranking/all', $param, [
+            'headers' => [
+                'User-Agent'      => 'PixivIOSApp/5.8.3',
+                'Accept-Language' => 'ja-JP',
+                'Authorization' => 'Bearer ' . TinyConfig::get('token'),
+            ]
+        ])->getBody()->getContents();
 
         return json_decode($contents, true);
     }

@@ -2,9 +2,9 @@
 
 namespace Pixiv;
 
-use Pixiv\Http\Delegater;
+use Pixiv\Http\Delegator;
+use Pixiv\Retry\Retry;
 use TinyConfig\TinyConfig;
-use TinyConfig\TinyConfigEmptyException;
 
 class Client
 {
@@ -24,35 +24,31 @@ class Client
         $this->publicApi = $this->getApi('PublicApi');
     }
 
-    public function getRankingAll()
+    public function getAccessToken()
     {
-        $this->publicApi->rankingAll();
+        return (new Retry())
+            ->beforeOnce(function() {
+                $initialSetting = require __DIR__ . '/Config.php';
+                TinyConfig::set('initial_setting', $initialSetting['initial_setting']);
+            })
+            ->retry(1, function() { return $this->auth->token()->getAccessToken(); });
     }
 
-    public function getToken()
+    public function getRankingAll()
     {
-        try {
-            $token = TinyConfig::get('token');
-        } catch (TinyConfigEmptyException $e) {
-            $token = $this->auth->token()->getAccessToken();
-            TinyConfig::set('token', $token);
-        }
-
-        return $token;
+        return (new Retry())
+            ->beforeEach(function() {
+                TinyConfig::set('token', $this->getAccessToken());
+            })
+            ->retry(1, function() { return $this->publicApi->rankingAll(); });
     }
 
     public function getApi($domain)
     {
         $klass = 'Pixiv\\Http\\Domain\\' . $domain;
-        $delegater = new Delegater(constant("{$klass}::BASE_URL"), constant("{$klass}::REFERER"));
+        $delegator = new Delegator(constant("{$klass}::BASE_URI"), [constant("{$klass}::REFERER")]);
 
-        return new $klass($delegater);
-    }
-
-    public function setPassword()
-    {
-        $initialSetting = require __DIR__ . '/Config.php';
-        TinyConfig::set('initial_setting', $initialSetting['initial_setting']);
+        return new $klass($delegator);
     }
 }
 

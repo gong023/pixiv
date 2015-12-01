@@ -36,7 +36,7 @@ class Container
 
     private function callWithCheck($key, $arg = null)
     {
-        if ($this->procs[$key]) {
+        if (isset($this->procs[$key])) {
             return $this->procs[$key]($arg);
         }
     }
