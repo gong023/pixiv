@@ -12,17 +12,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->client = new Client();
     }
 
-    public function testGetRankingAll()
-    {
-        $response = $this->client->getFollowing();
-
-        $this->assertInternalType('array', $response);
-    }
-
     public function testGetFollowing()
     {
         $response = $this->client->getFollowing();
 
-        $this->assertInternalType('array', $response);
+        $this->assertInstanceOf('\\Pixiv\\Entity\\Following', $response);
+        $this->assertInternalType('array', $response->toArray());
     }
+
+//    public function testGetRankingAll()
+//    {
+//        $response = $this->client->getRankingAll();
+//
+//        $this->assertInternalType('array', $response);
+//    }
 }

@@ -2,7 +2,7 @@
 
 namespace Pixiv\Http\Domain;
 
-use GuzzleHttp\Client;
+use Pixiv\Entity\Following;
 use Pixiv\Http\Delegator;
 use TinyConfig\TinyConfig;
 
@@ -11,9 +11,14 @@ class PublicApi
     const BASE_URI = 'https://public-api.secure.pixiv.net/';
     const REFERER = 'http://spapi.pixiv-app.net/';
 
-    public function __construct(Delegator $delegater)
+    /**
+     * @var Delegator
+     */
+    private $delegetor;
+
+    public function __construct(Delegator $delegator)
     {
-        $this->delegeter = $delegater;
+        $this->delegetor = $delegator;
     }
 
     public function rankingAll(
@@ -35,7 +40,7 @@ class PublicApi
             'profile_image_sizes'  => $profileImageSizes,
         ];
 
-        $contents = $this->delegeter->get('/v1/ranking/all', $param, [
+        $contents = $this->delegetor->get('/v1/ranking/all/works.json', $param, [
             'headers' => [
                 'Authorization' => 'Bearer ' . TinyConfig::get('token'),
             ]
@@ -61,12 +66,12 @@ class PublicApi
             'page'                 => $page,
         ];
 
-        $contents = $this->delegeter->get('/v1/me/following/works.json', $params, [
+        $contents = $this->delegetor->get('/v1/me/following/works.json', $params, [
             'headers' => [
                 'Authorization' => 'Bearer ' . TinyConfig::get('token'),
             ]
         ])->getBody()->getContents();
 
-        return json_decode($contents, true);
+        return new Following(json_decode($contents, true));
     }
 }

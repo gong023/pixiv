@@ -11,17 +11,17 @@ class Auth
     const BASE_URI = 'https://oauth.secure.pixiv.net';
     const REFERER = 'http://www.pixiv.net';
 
-    private $delegater;
+    private $delegator;
 
-    public function __construct(Delegator $delegater)
+    public function __construct(Delegator $delegator)
     {
-        $this->delegater = $delegater;
+        $this->delegator = $delegator;
     }
 
     public function token()
     {
         $config = TinyConfig::get('initial_setting');
-        $contents = $this->delegater->post('/auth/token', [
+        $contents = $this->delegator->post('/auth/token', [
             'client_id'     => $config['client_id'],
             'client_secret' => $config['client_secret'],
             'username'      => $config['username'],

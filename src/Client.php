@@ -39,6 +39,9 @@ class Client
         return $this->retryWithToken(1, function() { return $this->publicApi->rankingAll(); });
     }
 
+    /**
+     * @return \Pixiv\Entity\Following
+     */
     public function getFollowing()
     {
         return $this->retryWithToken(1, function() { return $this->publicApi->following(); });
