@@ -46,6 +46,7 @@ class PublicApi
             ]
         ])->getBody()->getContents();
 
+        // now implementing
         return json_decode($contents, true);
     }
 

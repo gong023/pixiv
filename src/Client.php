@@ -31,12 +31,16 @@ class Client
                 $initialSetting = require __DIR__ . '/Config.php';
                 TinyConfig::set('initial_setting', $initialSetting['initial_setting']);
             })
-            ->retry(1, function() { return $this->auth->token()->getAccessToken(); });
+            ->retry(1, function() {
+                return $this->auth->token()->getAccessToken();
+            });
     }
 
     public function getRankingAll()
     {
-        return $this->retryWithToken(1, function() { return $this->publicApi->rankingAll(); });
+        return $this->retryWithToken(1, function() {
+            return $this->publicApi->rankingAll();
+        });
     }
 
     /**
@@ -44,7 +48,9 @@ class Client
      */
     public function getFollowing()
     {
-        return $this->retryWithToken(1, function() { return $this->publicApi->following(); });
+        return $this->retryWithToken(1, function() {
+            return $this->publicApi->following();
+        });
     }
 
     public function getApi($domain)
