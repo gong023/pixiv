@@ -28,7 +28,7 @@ class Client
     {
         $this->auth = $this->getApi('Auth');
         $this->publicApi = $this->getApi('PublicApi');
-        $this->ipixiv = $this->getApi('IPixiv');
+        $this->ipixiv = new IPixiv(new Delegator('', [IPixiv::REFERER]));
     }
 
     public function getAccessToken()
@@ -60,15 +60,12 @@ class Client
         });
     }
 
-    public function downloadImage()
+    public function getImage($url)
     {
-        return IPixiv::dl(
-            'http://i3.pixiv.net/c/128x128/img-master/img/2016/01/15/16/59/23/54725462_p3_square1200.jpg',
-            '/vagrant/hoge.jpg'
-        );
+        return $this->ipixiv->getImage($url);
     }
 
-    public function getApi($domain)
+    private function getApi($domain)
     {
         $klass = 'Pixiv\\Http\\Domain\\' . $domain;
         $delegator = new Delegator(constant("{$klass}::BASE_URI"), [constant("{$klass}::REFERER")]);

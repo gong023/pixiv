@@ -2,10 +2,8 @@
 
 namespace Pixiv\Http\Domain;
 
-use GuzzleHttp\Client;
+use Pixiv\Entity\Image;
 use Pixiv\Http\Delegator;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Psr7\Request;
 
 class IPixiv
 {
@@ -19,23 +17,12 @@ class IPixiv
         $this->delegator = $delegator;
     }
 
-    public static function dl($url, $savePath)
+    public function getImage($url)
     {
-        $header = [
-            'User-Agent'      => 'PixivIOSApp/5.8.3',
-            'Accept-Language' => 'ja-JP',
+        $byte = $this->delegator->get($url, [], [
             'Accept-Encoding' => 'gzip, deflate',
-        ];
-        $client = new Client();
-        $request = new Request('get', $url, $header);
-        $response = $client->send($request);
+        ])->getBody()->getContents();
 
-        $resource = fopen($savePath, 'w');
-        /* @var $fileStream \GuzzleHttp\Psr7\Stream */
-        $fileStream = Psr7\stream_for($resource);
-        $fileStream->write($response->getBody()->getContents());
-        fclose($response);
-
-        return $response->getBody();
+        return new Image(['byte' => $byte]);
     }
 }

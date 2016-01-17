@@ -20,8 +20,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $response->toArray());
     }
 
-    public function testDl()
+    public function testGetImage()
     {
-        $this->client->downloadImage();
+        $response = $this->client->getImage('http://i3.pixiv.net/c/128x128/img-master/img/2016/01/15/16/59/23/54725462_p3_square1200.jpg');
+
+        $this->assertInstanceOf('\\Pixiv\\Entity\\Image', $response);
+        $this->assertNotEmpty($response->getByte());
     }
 }

@@ -28,15 +28,15 @@ class Delegator
     public function post($path, $parameter = [], $options = [])
     {
         $options = array_merge(['form_params' => $parameter], $options);
+
         return $this->sendWithCheck('POST', $path, $options);
     }
 
     public function get($path, $parameter = [], $options = [])
     {
         $parameter = urlencode(http_build_query($parameter));
-        $s = $this->sendWithCheck('GET', "{$path}?{$parameter}", $options);
 
-        return $s;
+        return $this->sendWithCheck('GET', "{$path}?{$parameter}", $options);
     }
 
     private function sendWithCheck($method, $uri, $options)
