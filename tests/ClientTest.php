@@ -19,4 +19,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\\Pixiv\\Entity\\Following', $response);
         $this->assertInternalType('array', $response->toArray());
     }
+
+    public function testDl()
+    {
+        $this->client->downloadImage();
+    }
 }
