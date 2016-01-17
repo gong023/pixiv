@@ -1,0 +1,19 @@
+language: php
+sudo: false
+php:
+- 5.5
+- 5.6
+script:
+- ./vendor/bin/php-cs-fixer fix --verbose --dry-run
+- ./vendor/bin/phpunit --coverage-text
+before_script:
+- mkdir -p build/logs
+- composer install
+after_script:
+- php vendor/bin/coveralls -v
+after_success:
+  - if  [ $TRAVIS_PHP_VERSION = '5.6' ] && [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then sh generate-api.sh; fi
+env:
+  global:
+  - secure: 5+cPF8XZTjRXsLRLSoIXCjZaiK42eviHa3V7AQBodtnOgo9PYyJS8qgIFRxPVOJbTZfGBngcgWqZu5n1D6ojRGtSdGL1LwV3u1TWNHMY8TXlZUoDpyyY6Yc1Zr0Zr/94eITVF7kHHBTV7aNCmqN9tAURRpJecQKVMEN5tdrALGq6LbqTejO8f72V1xshfvMHFNv5QSAZSwhJqzBPq/4DU3RQnlEd1LvEwk/SR+vkvLXIjob4nXWQfVSyWXub0ZVyHcsaPbLnErNVhFjSdPP4fkl1wsTvs65oDJiBxxO8OgL5eu4Ub0Z+pXbcJW6ciOVdmWKd1yCAzzGur+IHHbV+wduf5Hs7ll8ZxEQl/3zsvA79F501aKOZskfcQ4VkorKDHarBBQM9t/n98ijTFKnc5AmNkiQqXoiq5CK6Yq6GKTwjzix1txPG85HFKfJ8xAPF/PhQNpIqUf4qsFVR8lSEskpssXgG0uzg7W/G6fIbEQ5qaGOxX7jnU0O+ZiQxHFQwcE1smJVLRgY3sHEPuWlqA5+tCYINrLvsdTlOVkaBpFvgq0P/NaiwZharLn1ndtdScE70Gaucfdu/tuIvnxSBEv5EDXxs3Su6BWK513P/qJ8+JpcbAEOjEPwiqH52uRrBvcaTQyJu8ObImy05z6pNLXldB+DwtiIAsjtXTjjl41E=
+  - secure: kpxFHzC3bC109ZB0QjB49ooKsiIG3D09e5sMaXGHx1A1xcJ9fCzjjX9S/whVVpaD0+QfyZbX54EeLbEpjHzRIw/lqtU3IQZguodeJZPluGhemA/FarkHWBM8oOMEvkYiOMnrG/R8/RDTO8W48hpAttbo6nmG9zYcHYr1CIRrXGhLWX786iwyODdm5ZPzT+OAgKFz1GNq4udhuJKoig6i5BIqSGoHPwe488vJMDHqdhvXzHgM1QOB++ZMbyIH5z+bR4CJh/Txe9YsQhM8k4ojtb0opgKNo2X1ifkvtuHZ595txWhAwb1qM7kdfsAnxFcqc7oeUtykUk82bRemWoxp3oQ/f33UzcfvVXFoxRj4MEmImsm5nvGaNvwCrsGExLTEpFHilTGpHZOD5zt6lqJMgDwJEHbPGhI3cZurhwywe5+jYE+RO9vH3OcZNtuq0zFAYUyiT6e6ok6utf6MJbzeMbw4vRJ9IA5LdpAk6zAtiavuu9oRDiKesp+lL7mV7Kz22sNltr523EVe6n/h+NkrcaimbCyHz3IxlvYQRmK91YQEHNbzBmvQVnfS1MUaq6u9KpgBppp4SZfr3vSPF1jsu3CB5oNDEcevf+Lkihy6oZDQbSEKSLGdm78k0bfoVzA3+yc4x6ImXzO+1yEgUDyFGYp2Ke11gQ7wegXiNWzd8DE=

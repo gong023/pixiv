@@ -4,7 +4,7 @@ namespace Pixiv;
 
 use Pixiv\Http\Delegator;
 use Pixiv\Http\Domain\IPixiv;
-use Pixiv\Retry\Retry;
+use Retry\Retry;
 use TinyConfig\TinyConfig;
 
 class Client
