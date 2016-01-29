@@ -49,20 +49,58 @@ class Client
             });
     }
 
-    public function getRankingAll()
-    {
-        return $this->retryWithToken(3, function() {
-            return $this->publicApi->rankingAll();
+    public function getRankingAll(
+        $page               = 1,
+        $perPage            = 50,
+        $mode               = 'daily',
+        $includeStats       = 'true',
+        $includeSanityLevel = 'true',
+        $imageSizes         = 'px_128x128,px_480mw,large',
+        $profileImageSizes  = 'px_170x170,px_50x50'
+    ) {
+        $param = [
+            'page'                 => $page,
+            'per_page'             => $perPage,
+            'mode'                 => $mode,
+            'include_stats'        => $includeStats,
+            'include_sanity_level' => $includeSanityLevel,
+            'image_sizes'          => $imageSizes,
+            'profile_image_sizes'  => $profileImageSizes,
+        ];
+
+        return $this->retryWithToken(3, function() use ($param) {
+            return $this->publicApi->rankingAll($param);
         });
     }
 
     /**
-     * @return \Pixiv\Entity\Following
+     * @param int $page
+     * @param int $perPage
+     * @param string $includeStats
+     * @param string $includeSanityLevel
+     * @param string $imageSizes
+     * @param string $profileImageSizes
+     * @return Entity\Following
      */
-    public function getFollowing()
-    {
-        return $this->retryWithToken(3, function() {
-            return $this->publicApi->following();
+    public function getFollowing(
+        $page               = 1,
+        $perPage            = 30,
+        $includeStats       = 'true',
+        $includeSanityLevel = 'true',
+        $imageSizes         = 'px_128x128,px_480mw,large',
+        $profileImageSizes  = 'px_170x170,px_50x50'
+    ) {
+        $params = [
+            'include_sanity_level' => $includeSanityLevel,
+            'profile_image_sizes'  => $profileImageSizes,
+            'per_page'             => $perPage,
+            'include_stats'        => $includeStats,
+            'image_sizes'          => $imageSizes,
+            'page'                 => $page,
+        ];
+
+        return $this->retryWithToken(3, function() use ($params) {
+            return $this->publicApi->following($params);
         });
     }
 
