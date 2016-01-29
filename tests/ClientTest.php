@@ -9,8 +9,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->client = new Client();
+        $config = require_once __DIR__ . '/Config.php';
+        $this->client = new Client(
+            $config['client_id'],
+            $config['client_secret'],
+            $config['user_name'],
+            $config['password'],
+            $config['device_token']
+        );
     }
+
+//    public function testGetRankingAll()
+//    {
+//        $response = $this->client->getRankingAll();
+//
+//        $this->assertTrue(true);
+//    }
 
     public function testGetFollowing()
     {

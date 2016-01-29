@@ -40,7 +40,7 @@ class PublicApi
             'profile_image_sizes'  => $profileImageSizes,
         ];
 
-        $contents = $this->delegetor->get('/v1/ranking/all/works.json', $param, [
+        $contents = $this->delegetor->get('/v1/ranking/all', $param, [
             'headers' => [
                 'Authorization' => 'Bearer ' . TinyConfig::get('token'),
             ]

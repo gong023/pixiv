@@ -24,28 +24,34 @@ class Client
      */
     private $ipixiv;
 
-    public function __construct()
-    {
+    public function __construct(
+        $clientId, $clientSecret, $userName, $password, $deviceToken
+    ) {
         $this->auth = $this->getApi('Auth');
         $this->publicApi = $this->getApi('PublicApi');
         $this->ipixiv = new IPixiv(new Delegator('', [IPixiv::REFERER]));
+
+        TinyConfig::set('initial_setting', [
+            'client_id'     => $clientId,
+            'client_secret' => $clientSecret,
+            'username'      => $userName,
+            'password'      => $password,
+            'device_token'  => $deviceToken,
+            'grant_type'    => 'password',
+        ]);
     }
 
     public function getAccessToken()
     {
         return (new Retry())
-            ->beforeOnce(function() {
-                $initialSetting = require __DIR__ . '/Config.php';
-                TinyConfig::set('initial_setting', $initialSetting['initial_setting']);
-            })
-            ->retry(1, function() {
+            ->retry(3, function() {
                 return $this->auth->token()->getAccessToken();
             });
     }
 
     public function getRankingAll()
     {
-        return $this->retryWithToken(1, function() {
+        return $this->retryWithToken(3, function() {
             return $this->publicApi->rankingAll();
         });
     }
@@ -55,7 +61,7 @@ class Client
      */
     public function getFollowing()
     {
-        return $this->retryWithToken(1, function() {
+        return $this->retryWithToken(3, function() {
             return $this->publicApi->following();
         });
     }
