@@ -19,12 +19,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-//    public function testGetRankingAll()
-//    {
-//        $response = $this->client->getRankingAll();
-//
-//        $this->assertTrue(true);
-//    }
+    public function testGetRankingAll()
+    {
+        $response = $this->client->getRankingAll();
+
+        $this->assertInstanceOf('\\Pixiv\\Entity\\Ranking', $response);
+    }
 
     public function testGetFollowing()
     {

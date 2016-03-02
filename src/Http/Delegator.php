@@ -36,7 +36,7 @@ class Delegator
     public function get($path, $query = [], $headers = [])
     {
         $headers = array_merge_recursive($headers, $this->defaultHeader);
-        $queryParameter = urlencode(http_build_query($query));
+        $queryParameter = http_build_query($query);
         $request = new Request('GET', "{$path}?{$queryParameter}", $headers);
 
         return $this->sendWithCheck($request);

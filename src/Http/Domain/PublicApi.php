@@ -3,6 +3,7 @@
 namespace Pixiv\Http\Domain;
 
 use Pixiv\Entity\Following;
+use Pixiv\Entity\Ranking;
 use Pixiv\Http\Delegator;
 use TinyConfig\TinyConfig;
 
@@ -23,11 +24,14 @@ class PublicApi
 
     public function rankingAll($param) {
         $contents = $this->delegator->get('/v1/ranking/all', $param, [
-            'Authorization' => 'Bearer ' . TinyConfig::get('token'),
+            'Connection'       => 'keep-alive',
+            'Proxy-Connection' => 'keep-alive',
+            'Accept'           => '*/*',
+            'Accept-Encoding'  => 'gzip, deflate',
+            'Authorization'    => 'Bearer ' . TinyConfig::get('token'),
         ])->getBody()->getContents();
 
-        // now implementing
-        return json_decode($contents, true);
+        return new Ranking(json_decode($contents, true));
     }
 
     public function following($params) {
