@@ -23,9 +23,7 @@ class PublicApi
 
     public function rankingAll($param) {
         $contents = $this->delegator->get('/v1/ranking/all', $param, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . TinyConfig::get('token'),
-            ]
+            'Authorization' => 'Bearer ' . TinyConfig::get('token'),
         ])->getBody()->getContents();
 
         // now implementing
@@ -34,9 +32,7 @@ class PublicApi
 
     public function following($params) {
         $contents = $this->delegator->get('/v1/me/following/works.json', $params, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . TinyConfig::get('token'),
-            ]
+            'Authorization' => 'Bearer ' . TinyConfig::get('token'),
         ])->getBody()->getContents();
 
         return new Following(json_decode($contents, true));

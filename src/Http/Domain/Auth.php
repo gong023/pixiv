@@ -21,7 +21,7 @@ class Auth
     public function token()
     {
         $config = TinyConfig::get('initial_setting');
-        $contents = $this->delegator->post('/auth/token', [
+        $contents = $this->delegator->postForm('/auth/token', [
             'client_id'     => $config['client_id'],
             'client_secret' => $config['client_secret'],
             'username'      => $config['username'],

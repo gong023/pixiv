@@ -29,7 +29,7 @@ class Client
     ) {
         $this->auth = $this->getApi('Auth');
         $this->publicApi = $this->getApi('PublicApi');
-        $this->ipixiv = new IPixiv(new Delegator('', ['headers' => [IPixiv::REFERER]]));
+        $this->ipixiv = new IPixiv(new Delegator('', IPixiv::REFERER));
 
         TinyConfig::set('initial_setting', [
             'client_id'     => $clientId,
@@ -112,11 +112,7 @@ class Client
     private function getApi($domain)
     {
         $klass = 'Pixiv\\Http\\Domain\\' . $domain;
-        $delegator = new Delegator(constant("{$klass}::BASE_URI"), [
-            'headers' => [
-                constant("{$klass}::REFERER")
-            ],
-        ]);
+        $delegator = new Delegator(constant("{$klass}::BASE_URI"), constant("{$klass}::REFERER"));
 
         return new $klass($delegator);
     }
