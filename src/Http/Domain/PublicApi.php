@@ -14,15 +14,15 @@ class PublicApi
     /**
      * @var Delegator
      */
-    private $delegetor;
+    private $delegator;
 
     public function __construct(Delegator $delegator)
     {
-        $this->delegetor = $delegator;
+        $this->delegator = $delegator;
     }
 
     public function rankingAll($param) {
-        $contents = $this->delegetor->get('/v1/ranking/all', $param, [
+        $contents = $this->delegator->get('/v1/ranking/all', $param, [
             'headers' => [
                 'Authorization' => 'Bearer ' . TinyConfig::get('token'),
             ]
@@ -33,7 +33,7 @@ class PublicApi
     }
 
     public function following($params) {
-        $contents = $this->delegetor->get('/v1/me/following/works.json', $params, [
+        $contents = $this->delegator->get('/v1/me/following/works.json', $params, [
             'headers' => [
                 'Authorization' => 'Bearer ' . TinyConfig::get('token'),
             ]

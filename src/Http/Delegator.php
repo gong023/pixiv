@@ -15,7 +15,7 @@ class Delegator
     {
         $options = array_merge($options, [
             'headers' => [
-                'User-Agent'      => 'PixivIOSApp/5.8.3',
+                'User-Agent'      => 'PixivIOSApp/5.8.7',
                 'Accept-Language' => 'ja-JP',
             ],
         ]);
