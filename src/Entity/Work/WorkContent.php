@@ -1,6 +1,6 @@
 <?php
 
-namespace Pixiv\Entity\Ranking\Work;
+namespace Pixiv\Entity\Work;
 
 use TurmericSpice\ReadableAttributes;
 
@@ -23,6 +23,7 @@ class WorkContent
         mayHaveAsString  as public getBookStyle;
         mayHaveAsString  as public getType;
         mayHaveAsString  as public getSanityLevel;
+        mayHaveAsArray   as public getMetadata;
     }
 
     public function getTools()
@@ -33,11 +34,6 @@ class WorkContent
     public function getFavoriteId()
     {
         return $this->attributes->mayHave('favorite_id')->value();
-    }
-
-    public function getMetadata()
-    {
-        return $this->attributes->mayHave('metadata')->value();
     }
 
     public function getContentType()

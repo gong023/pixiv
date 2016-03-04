@@ -14,13 +14,15 @@ class Delegator
 {
     private $defaultHeader;
 
-    public function __construct($baseUri, $referer)
+    public function __construct($baseUri, array $headers)
     {
-        $this->defaultHeader = [
+        $this->defaultHeader = array_merge([
             'User-Agent'      => 'PixivIOSApp/5.8.7',
             'Accept-Language' => 'ja-JP',
-            'Referer'         => $referer,
-        ];
+            'Connection'      => 'keep-alive',
+            'Accept'          => '*/*',
+            'Accept-Encoding' => 'gzip, deflate',
+        ], $headers);
         $this->client = new Client(['base_uri' => $baseUri]);
     }
 

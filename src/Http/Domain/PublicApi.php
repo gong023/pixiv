@@ -4,6 +4,7 @@ namespace Pixiv\Http\Domain;
 
 use Pixiv\Entity\Following;
 use Pixiv\Entity\Ranking;
+use Pixiv\Entity\Work\WorkContent;
 use Pixiv\Http\Delegator;
 use TinyConfig\TinyConfig;
 
@@ -22,23 +23,34 @@ class PublicApi
         $this->delegator = $delegator;
     }
 
-    public function rankingAll($param) {
+    public function rankingAll($param)
+    {
         $contents = $this->delegator->get('/v1/ranking/all', $param, [
-            'Connection'       => 'keep-alive',
             'Proxy-Connection' => 'keep-alive',
-            'Accept'           => '*/*',
-            'Accept-Encoding'  => 'gzip, deflate',
             'Authorization'    => 'Bearer ' . TinyConfig::get('token'),
         ])->getBody()->getContents();
 
         return new Ranking(json_decode($contents, true));
     }
 
-    public function following($params) {
+    public function following($params)
+    {
         $contents = $this->delegator->get('/v1/me/following/works.json', $params, [
             'Authorization' => 'Bearer ' . TinyConfig::get('token'),
         ])->getBody()->getContents();
 
         return new Following(json_decode($contents, true));
+    }
+
+    public function work($id, $params)
+    {
+        $contents = $this->delegator->get("/v1/works/{$id}.json", $params, [
+            'Proxy-Connection' => 'keep-alive',
+            'Authorization'    => 'Bearer ' . TinyConfig::get('token'),
+        ])->getBody()->getContents();
+        $r = json_decode($contents, true);
+        $rawData = isset($r['response'][0]) ? $r['response'][0] : [];
+
+        return new WorkContent($rawData);
     }
 }

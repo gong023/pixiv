@@ -29,7 +29,7 @@ class Client
     ) {
         $this->auth = $this->getApi('Auth');
         $this->publicApi = $this->getApi('PublicApi');
-        $this->ipixiv = new IPixiv(new Delegator('', IPixiv::REFERER));
+        $this->ipixiv = new IPixiv(new Delegator('', ['Referer' => IPixiv::REFERER]));
 
         TinyConfig::set('initial_setting', [
             'client_id'     => $clientId,
@@ -73,11 +73,30 @@ class Client
         });
     }
 
+    public function getWork(
+        $id,
+        $includeStats       = true,
+        $includeSanityLevel = true,
+        $imageSizes         = 'px_128x128,px_480mw,large',
+        $profileImageSizes  = 'px_170x170,px_50x50'
+    ) {
+        $param = [
+            'include_stats'        => $includeStats,
+            'include_sanity_level' => $includeSanityLevel,
+            'image_sizes'          => $imageSizes,
+            'profile_image_sizes'  => $profileImageSizes,
+        ];
+
+        return $this->retryWithToken(3, function() use ($id, $param) {
+            return $this->publicApi->work($id, $param);
+        });
+    }
+
     /**
      * @param int $page
      * @param int $perPage
-     * @param string $includeStats
-     * @param string $includeSanityLevel
+     * @param bool $includeStats
+     * @param bool $includeSanityLevel
      * @param string $imageSizes
      * @param string $profileImageSizes
      * @return Entity\Following
@@ -85,8 +104,8 @@ class Client
     public function getFollowing(
         $page               = 1,
         $perPage            = 30,
-        $includeStats       = 'true',
-        $includeSanityLevel = 'true',
+        $includeStats       = true,
+        $includeSanityLevel = true,
         $imageSizes         = 'px_128x128,px_480mw,large',
         $profileImageSizes  = 'px_170x170,px_50x50'
     ) {
@@ -112,7 +131,9 @@ class Client
     private function getApi($domain)
     {
         $klass = 'Pixiv\\Http\\Domain\\' . $domain;
-        $delegator = new Delegator(constant("{$klass}::BASE_URI"), constant("{$klass}::REFERER"));
+        $delegator = new Delegator(constant("{$klass}::BASE_URI"), [
+            'Referer' => constant("{$klass}::REFERER")
+        ]);
 
         return new $klass($delegator);
     }

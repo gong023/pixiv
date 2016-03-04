@@ -19,13 +19,7 @@ class IPixiv
 
     public function getImage($url)
     {
-        $byte = $this->delegator->get($url, [], [
-            'headers' => [
-                'Connection'      => 'keep-alive',
-                'Accept'          => '*/*',
-                'Accept-Encoding' => 'gzip, deflate',
-            ]
-        ])->getBody()->getContents();
+        $byte = $this->delegator->get($url)->getBody()->getContents();
 
         return new Image(['byte' => $byte]);
     }

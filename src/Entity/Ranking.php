@@ -18,8 +18,7 @@ class Ranking
 
     public function getWorks()
     {
-        $this->attributes->mayHave('works')
-            ->asInstanceArray('\\Pixiv\\Entity\\Ranking\\Work');
+        $this->attributes->mayHave('works')->asInstanceArray('\\Pixiv\\Entity\\Work');
     }
 }
 

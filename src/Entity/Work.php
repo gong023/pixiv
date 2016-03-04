@@ -1,6 +1,6 @@
 <?php
 
-namespace Pixiv\Entity\Ranking;
+namespace Pixiv\Entity;
 
 use TurmericSpice\ReadableAttributes;
 
@@ -14,6 +14,6 @@ class Work
     public function getWorkContent()
     {
         $this->attributes->mayHave('work')
-            ->asInstanceOf('\\Pixiv\\Entity\\Ranking\\Work\\WorkContent');
+            ->asInstanceOf('\\Pixiv\\Entity\\Work\\WorkContent');
     }
 }
