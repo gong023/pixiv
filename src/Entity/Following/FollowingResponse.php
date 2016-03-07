@@ -2,9 +2,10 @@
 
 namespace Pixiv\Entity\Following;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 
-class FollowingResponse
+class FollowingResponse extends Entity
 {
     use ReadableAttributes {
         mayHaveAsInt     as public getId;

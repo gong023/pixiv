@@ -2,9 +2,10 @@
 
 namespace Pixiv\Entity;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 
-class User
+class User extends Entity
 {
     use ReadableAttributes {
         mayHaveAsInt     as public getId;

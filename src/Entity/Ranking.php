@@ -2,9 +2,10 @@
 
 namespace Pixiv\Entity;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 
-class Ranking
+class Ranking extends Entity
 {
     use ReadableAttributes {
         mayHaveAsString as public getContent;

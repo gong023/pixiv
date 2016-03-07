@@ -2,9 +2,10 @@
 
 namespace Pixiv\Entity\Auth;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 
-class User
+class User extends Entity
 {
     use ReadableAttributes {
         mayHaveAsArray  as public getProfileImageUrls;

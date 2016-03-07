@@ -1,9 +1,10 @@
 <?php
 namespace Pixiv\Entity;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 
-class Auth
+class Auth extends Entity
 {
     use ReadableAttributes {
         mayHaveAsString as public getAccessToken;

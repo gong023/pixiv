@@ -2,9 +2,10 @@
 
 namespace Pixiv\Entity;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 
-class Following
+class Following extends Entity
 {
     use ReadableAttributes {
         mayHaveAsString as public getStatus;

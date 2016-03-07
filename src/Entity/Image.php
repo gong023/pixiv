@@ -2,10 +2,11 @@
 
 namespace Pixiv\Entity;
 
+use Pixiv\Entity;
 use TurmericSpice\ReadableAttributes;
 use GuzzleHttp\Psr7;
 
-class Image
+class Image extends Entity
 {
     use ReadableAttributes {
         mayHaveAsString as public getByte;
