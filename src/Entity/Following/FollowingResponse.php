@@ -31,16 +31,25 @@ class FollowingResponse extends Entity
         return $this->attributes->mayHave('stats')->value();
     }
 
+    /**
+     * @return \Datetime
+     */
     public function getCreatedTime()
     {
         return $this->attributes->mayHave('created_time')->asInstanceOf('\\DateTime');
     }
 
+    /**
+     * @return \Datetime
+     */
     public function getReuploadedTime()
     {
         return $this->attributes->mayHave('reuploaded_time')->asInstanceOf('\\DateTime');
     }
 
+    /**
+     * @return \Pixiv\Entity\User
+     */
     public function getUser()
     {
         return $this->attributes->mayHave('user')->asInstanceOf('\\Pixiv\\Entity\\User');

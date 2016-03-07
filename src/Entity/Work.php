@@ -12,6 +12,9 @@ class Work extends Entity
         mayHaveAsInt as public getPreviousRank;
     }
 
+    /**
+     * @return \Pixiv\Entity\Work\WorkContent
+     */
     public function getWorkContent()
     {
         $this->attributes->mayHave('work')

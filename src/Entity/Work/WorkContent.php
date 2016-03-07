@@ -42,16 +42,25 @@ class WorkContent extends Entity
         return $this->attributes->mayHave('content_type')->value();
     }
 
+    /**
+     * @return \Datetime
+     */
     public function getCreatedTime()
     {
         return $this->attributes->mayHave('created_time')->asInstanceOf('\\Datetime');
     }
 
+    /**
+     * @return \Datetime
+     */
     public function getReuploadedTime()
     {
         return $this->attributes->mayHave('reuploaded_time')->asInstanceOf('\\Datetime');
     }
 
+    /**
+     * @return \Pixiv\Entity\User
+     */
     public function getUser()
     {
         return $this->attributes->mayHave('user')->asInstanceOf('\\Pixiv\\Entity\\User');

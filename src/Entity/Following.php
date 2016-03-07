@@ -13,6 +13,9 @@ class Following extends Entity
         mayHaveAsArray  as public getPagination;
     }
 
+    /**
+     * @return \Pixiv\Entity\Following\FollowingResponse[]
+     */
     public function getResponse()
     {
         return $this->attributes->mayHave('response')

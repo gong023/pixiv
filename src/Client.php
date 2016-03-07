@@ -49,6 +49,16 @@ class Client
             });
     }
 
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param string $mode
+     * @param string $includeStats
+     * @param string $includeSanityLevel
+     * @param string $imageSizes
+     * @param string $profileImageSizes
+     * @return \Pixiv\Entity\Ranking
+     */
     public function getRankingAll(
         $page               = 1,
         $perPage            = 50,
@@ -73,6 +83,14 @@ class Client
         });
     }
 
+    /**
+     * @param $id
+     * @param bool|true $includeStats
+     * @param bool|true $includeSanityLevel
+     * @param string $imageSizes
+     * @param string $profileImageSizes
+     * @return \Pixiv\Entity\Work\WorkContent
+     */
     public function getWork(
         $id,
         $includeStats       = true,
@@ -123,6 +141,10 @@ class Client
         });
     }
 
+    /**
+     * @param $url
+     * @return Entity\Image
+     */
     public function getImage($url)
     {
         return $this->ipixiv->getImage($url);
