@@ -13,7 +13,6 @@ class FollowingResponse extends Entity
         mayHaveAsString  as public getCaption;
         mayHaveAsArray   as public getTags;
         mayHaveAsArray   as public getTools;
-        mayHaveAsArray   as public getImageUrls;
         mayHaveAsInt     as public getWidth;
         mayHaveAsInt     as public getHeight;
         mayHaveAsInt     as public getPublicity;
@@ -63,5 +62,13 @@ class FollowingResponse extends Entity
     public function getContentType()
     {
         return $this->attributes->mayHave('content_type')->value();
+    }
+
+    /**
+     * @return \Pixiv\Entity\ImageUrls
+     */
+    public function getImageUrls()
+    {
+        return $this->attributes->mayHave('image_urls')->asInstanceOf('\\Pixiv\\Entity\\ImageUrls');
     }
 }

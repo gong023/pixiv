@@ -3,6 +3,7 @@
 namespace Pixiv\Entity\Work;
 
 use Pixiv\Entity;
+use TurmericSpice\Container;
 use TurmericSpice\ReadableAttributes;
 
 class WorkContent extends Entity
@@ -12,7 +13,6 @@ class WorkContent extends Entity
         mayHaveAsString  as public getTitle;
         mayHaveAsString  as public getCaption;
         mayHaveAsArray   as public getTags;
-        mayHaveAsArray   as public getImageUrls;
         mayHaveAsInt     as public getWidth;
         mayHaveAsInt     as public getHeight;
         mayHaveAsArray   as public getStats;
@@ -24,7 +24,6 @@ class WorkContent extends Entity
         mayHaveAsString  as public getBookStyle;
         mayHaveAsString  as public getType;
         mayHaveAsString  as public getSanityLevel;
-        mayHaveAsArray   as public getMetadata;
     }
 
     public function getTools()
@@ -64,6 +63,32 @@ class WorkContent extends Entity
     public function getUser()
     {
         return $this->attributes->mayHave('user')->asInstanceOf('\\Pixiv\\Entity\\User');
+    }
+
+    /**
+     * @return \Pixiv\Entity\ImageUrls
+     */
+    public function getImageUrls()
+    {
+        return $this->attributes->mayHave('image_urls')->asInstanceOf('\\Pixiv\\Entity\\ImageUrls');
+    }
+
+    /**
+     * I don't need other things except 'pages' key which contains image_urls of manga.
+     *
+     * @return \Pixiv\Entity\ImageUrls[]
+     */
+    public function getMetadata()
+    {
+        $metadata = $this->attributes->mayHave('metadata')->asArray();
+        if (isset($metadata['pages'])) {
+            $container = new Container($metadata);
+
+            return $container->mayHave('pages')
+                ->asInstanceArray('\\Pixiv\\Entity\\ImageUrls');
+        }
+
+        return [];
     }
 }
 
