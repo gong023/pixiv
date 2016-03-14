@@ -82,10 +82,12 @@ class WorkContent extends Entity
     {
         $metadata = $this->attributes->mayHave('metadata')->asArray();
         if (isset($metadata['pages'])) {
-            $container = new Container($metadata);
+            $imageUrls = [];
+            foreach ($metadata['pages'] as $page) {
+                $imageUrls[] = new Entity\ImageUrls($page['image_urls']);
+            }
 
-            return $container->mayHave('pages')
-                ->asInstanceArray('\\Pixiv\\Entity\\ImageUrls');
+            return $imageUrls;
         }
 
         return [];
