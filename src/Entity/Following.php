@@ -23,6 +23,21 @@ class Following extends Entity
             ->asInstanceArray('Pixiv\\Entity\\Following\\FollowingResponse');
     }
 
+    /**
+     * @param $workId
+     * @return FollowingResponse
+     */
+    public function getResponseById($workId)
+    {
+        foreach ($this->getResponse() as $response) {
+            if ($response->getId() === (int)$workId) {
+                return $response;
+            }
+        }
+
+        throw new \LogicException($workId . ' is not found');
+    }
+
     public function getWorkIds()
     {
         return array_map(function (FollowingResponse $followingResponse) {
