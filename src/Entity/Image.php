@@ -9,7 +9,17 @@ use GuzzleHttp\Psr7;
 class Image extends Entity
 {
     use ReadableAttributes {
+        mayHaveAsString as public getUrl;
         mayHaveAsString as public getByte;
+    }
+
+    public function getExtension()
+    {
+        if (preg_match('/\..+$/', $this->getUrl(), $matches, 0, -6)) {
+            return $matches[0];
+        }
+
+        return '';
     }
 
     public function saveToFile($path)

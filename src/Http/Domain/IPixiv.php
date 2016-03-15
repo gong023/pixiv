@@ -21,6 +21,6 @@ class IPixiv
     {
         $byte = $this->delegator->get($url)->getBody()->getContents();
 
-        return new Image(['byte' => $byte]);
+        return new Image(['byte' => $byte, 'url' => $url]);
     }
 }
