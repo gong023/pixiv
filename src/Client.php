@@ -24,12 +24,19 @@ class Client
      */
     private $ipixiv;
 
+    /**
+     * @var \ReflectionClass
+     */
+    private $reflection;
+
     public function __construct(
         $clientId, $clientSecret, $userName, $password, $deviceToken
     ) {
         $this->auth = $this->getApi('Auth');
         $this->publicApi = $this->getApi('PublicApi');
         $this->ipixiv = new IPixiv(new Delegator('', ['Referer' => IPixiv::REFERER]));
+
+        $this->reflection = new \ReflectionClass(__CLASS__);
 
         TinyConfig::set('initial_setting', [
             'client_id'     => $clientId,
@@ -68,15 +75,7 @@ class Client
         $imageSizes         = 'px_128x128,px_480mw,large',
         $profileImageSizes  = 'px_170x170,px_50x50'
     ) {
-        $param = [
-            'page'                 => $page,
-            'per_page'             => $perPage,
-            'mode'                 => $mode,
-            'include_stats'        => $includeStats,
-            'include_sanity_level' => $includeSanityLevel,
-            'image_sizes'          => $imageSizes,
-            'profile_image_sizes'  => $profileImageSizes,
-        ];
+        $param = $this->migrateParameter(__FUNCTION__, func_get_args());
 
         return $this->retryWithToken(3, function() use ($param) {
             return $this->publicApi->rankingAll($param);
@@ -98,12 +97,7 @@ class Client
         $imageSizes         = 'px_128x128,px_480mw,large',
         $profileImageSizes  = 'px_170x170,px_50x50'
     ) {
-        $param = [
-            'include_stats'        => $includeStats,
-            'include_sanity_level' => $includeSanityLevel,
-            'image_sizes'          => $imageSizes,
-            'profile_image_sizes'  => $profileImageSizes,
-        ];
+        $param = $this->migrateParameter(__FUNCTION__, func_get_args());
 
         return $this->retryWithToken(3, function() use ($id, $param) {
             return $this->publicApi->work($id, $param);
@@ -127,14 +121,7 @@ class Client
         $imageSizes         = 'px_128x128,px_480mw,large',
         $profileImageSizes  = 'px_170x170,px_50x50'
     ) {
-        $params = [
-            'include_sanity_level' => $includeSanityLevel,
-            'profile_image_sizes'  => $profileImageSizes,
-            'per_page'             => $perPage,
-            'include_stats'        => $includeStats,
-            'image_sizes'          => $imageSizes,
-            'page'                 => $page,
-        ];
+        $params = $this->migrateParameter(__FUNCTION__, func_get_args());
 
         return $this->retryWithToken(3, function() use ($params) {
             return $this->publicApi->following($params);
@@ -173,17 +160,7 @@ class Client
         $imageSizes         = 'px_128x128,px_480mw,large',
         $profileImageSizes  = 'px_170x170,px_50x50'
     ) {
-        $params = [
-            'q'                  => $q,
-            'mode'               => $mode,
-            'perPage'            => $perPage,
-            'order'              => $order,
-            'sort'               => $sort,
-            'includeStats'       => $includeStats,
-            'includeSanityLevel' => $includeSanityLevel,
-            'imageSizes'         => $imageSizes,
-            'profileImageSizes'  => $profileImageSizes,
-        ];
+        $params = $this->migrateParameter(__FUNCTION__, func_get_args());
 
         return $this->retryWithToken(3, function () use ($params) {
             return $this->publicApi->search($params);
@@ -198,6 +175,27 @@ class Client
         ]);
 
         return new $klass($delegator);
+    }
+
+    /**
+     * kuso
+     *
+     * @param $functionName
+     * @param $funcGetArgs
+     * @return array
+     */
+    private function migrateParameter($functionName, $funcGetArgs)
+    {
+        $migrated = [];
+        foreach ($this->reflection->getMethod($functionName)->getParameters() as $index => $param) {
+            if (isset($funcGetArgs[$index])) {
+                $migrated[$param->name] = $funcGetArgs[$index];
+            } else {
+                $migrated[$param->name] = $param->getDefaultValue();
+            }
+        }
+        
+        return $migrated;
     }
 
     private function retryWithToken($times, $proc)

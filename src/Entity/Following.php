@@ -11,7 +11,7 @@ class Following extends Entity
     use ReadableAttributes {
         mayHaveAsString as public getStatus;
         mayHaveAsInt    as public getCount;
-        mayHaveAsArray  as public getPagination;
+        toArray         as public __toArray;
     }
 
     /**
@@ -21,6 +21,28 @@ class Following extends Entity
     {
         return $this->attributes->mayHave('response')
             ->asInstanceArray('Pixiv\\Entity\\Following\\FollowingResponse');
+    }
+
+    public function getPagination()
+    {
+        return $this->attributes->mayHave('pagination')->asInstanceOf('\\Pixiv\\Entity\\Pagination');
+    }
+
+    public function toArray()
+    {
+        return [
+            'status' => $this->getStatus(),
+            'count'  => $this->getCount(),
+            'pagination' => $this->getPagination(),
+            'response'   => $this->getResponse(),
+        ];
+    }
+
+    public function getWorkIds()
+    {
+        return array_map(function (FollowingResponse $followingResponse) {
+            return $followingResponse->getId();
+        }, $this->getResponse());
     }
 
     /**
@@ -38,13 +60,6 @@ class Following extends Entity
         throw new \LogicException($workId . ' is not found');
     }
 
-    public function getWorkIds()
-    {
-        return array_map(function (FollowingResponse $followingResponse) {
-            return $followingResponse->getId();
-        }, $this->getResponse());
-    }
-
     /**
      * @param Following $target
      * @return FollowingResponse[]
@@ -57,5 +72,7 @@ class Following extends Entity
             return ! in_array($subject->getId(), $targetIds);
         });
     }
+
+
 }
 

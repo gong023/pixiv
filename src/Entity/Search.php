@@ -12,7 +12,7 @@ class Search
     }
 
     /**
-     * @return \\Pixiv\\Entity\\Work\\WorkContent[]
+     * @return \Pixiv\Entity\Work\WorkContent[]
      */
     public function getResponse()
     {
@@ -20,7 +20,7 @@ class Search
     }
 
     /**
-     * @return \\Pixiv\\Entity\\Pagination
+     * @return \Pixiv\Entity\Pagination
      */
     public function getPagination()
     {
