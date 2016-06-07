@@ -2,37 +2,44 @@
 
 namespace Pixiv\Entity\Request;
 
-use Pixiv\Entity\Request;
+use TurmericSpice\ReadWriteAttributes;
 
-/**
- * @method mixed getQ
- * @method mixed getMode
- * @method mixed getPerPage
- * @method mixed getOrder
- * @method mixed getSort
- * @method mixed getIncludeStats
- * @method mixed getIncludeSanityLevel
- * @method mixed getImageSizes
- * @method mixed getProfileImageSizes
- * @method $this setQ($value)
- * @method $this setMode($value)
- * @method $this setPerPage($value)
- * @method $this setOrder($value)
- * @method $this setSort($value)
- * @method $this setIncludeStats($value)
- * @method $this setIncludeSanityLevel($value)
- * @method $this setImageSizes($value)
- * @method $this setProfileImageSizes($value)
- */
-class SearchRequest extends Request
+class SearchRequest
 {
-    public $q;
-    public $mode                 = 'tag';
-    public $per_page             = 30;
-    public $order                = 'desc';
-    public $sort                 = 'date';
-    public $include_stats        = true;
-    public $include_sanityLevel  = true;
-    public $image_sizes          = 'px_128x128,px_480mw,large';
-    public $profile_image_sizes  = 'px_170x170,px_50x50';
+     use ReadWriteAttributes {
+          mustHaveAsString  as public getQ;
+          mustHaveAsString  as public getMode;
+          mustHaveAsInt     as public getPerPage;
+          mustHaveAsString  as public getOrder;
+          mustHaveAsString  as public getSort;
+          mustHaveAsBoolean as public getIncludeStats;
+          mustHaveAsBoolean as public getIncludeSanityLevel;
+          mustHaveAsString  as public getImageSizes;
+          mustHaveAsString  as public getProfileImageSizes;
+          setValue          as public setQ;
+          setValue          as public setMode;
+          setValue          as public setPerPage;
+          setValue          as public setOrder;
+          setValue          as public setSort;
+          setValue          as public setIncludeStats;
+          setValue          as public setIncludeSanityLevel;
+          setValue          as public setImageSizes;
+          setValue          as public setProfileImageSizes;
+          __construct       as public turmericConstruct;
+     }
+
+     public function __construct($attributes = [])
+     {
+          $attributes += [
+              'mode'                 => 'tag',
+              'per_page'             => 30,
+              'order'                => 'desc',
+              'sort'                 => 'date',
+              'include_stats'        => true,
+              'include_sanity_level' => true,
+              'image_sizes'          => 'px_128x128,px_480mw,large',
+              'profile_image_sizes'  => 'px_170x170,px_50x50',
+          ];
+          $this->turmericConstruct($attributes);
+     }
 }

@@ -2,28 +2,36 @@
 
 namespace Pixiv\Entity\Request;
 
-use Pixiv\Entity\Request;
+use TurmericSpice\ReadWriteAttributes;
 
-/**
- * @method mixed getPage
- * @method mixed getPerPage
- * @method mixed getIncludeStats
- * @method mixed getIncludeSanityLevel
- * @method mixed getImageSizes
- * @method mixed getProfileImageSizes
- * @method $this setPage($value)
- * @method $this setPerPage($value)
- * @method $this setIncludeStats($value)
- * @method $this setIncludeSanityLevel($value)
- * @method $this setImageSizes($value)
- * @method $this setProfileImageSizes($value)
- */
-class FollowingRequest extends Request
+class FollowingRequest
 {
-    public $page                 = 1;
-    public $per_page             = 30;
-    public $include_stats        = true;
-    public $include_sanity_level = true;
-    public $image_sizes          = 'px_128x128,px_480mw,large';
-    public $profile_image_sizes  = 'px_170x170,px_50x50';
+    use ReadWriteAttributes {
+        mustHaveAsInt     as public getPage;
+        mustHaveAsInt     as public getPerPage;
+        mustHaveAsBoolean as public getIncludeStats;
+        mustHaveAsBoolean as public getIncludeSanityLevel;
+        mustHaveAsString  as public getImageSizes;
+        mustHaveAsString  as public getProfileImageSizes;
+        setValue          as public setPage;
+        setValue          as public setPerPage;
+        setValue          as public setIncludeStats;
+        setValue          as public setIncludeSanityLevel;
+        setValue          as public setImageSizes;
+        setValue          as public setProfileImageSizes;
+        __construct       as public turmericConstruct;
+    }
+
+    public function __construct($attributes = [])
+    {
+        $attributes += [
+            'page'                 => 1,
+            'per_page'             => 30,
+            'include_stats'        => true,
+            'include_sanity_level' => true,
+            'image_sizes'          => 'px_128x128,px_480mw,large',
+            'profile_image_sizes'  => 'px_170x170,px_50x50',
+        ];
+        $this->turmericConstruct($attributes);
+    }
 }
