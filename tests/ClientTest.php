@@ -62,4 +62,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\\Pixiv\\Entity\\Work\\WorkContent', $response);
     }
+
+    public function testSearch()
+    {
+        $response = self::$client->getSearchResult('アイカツ');
+
+        $this->assertInstanceOf('\\Pixiv\\Entity\\Search', $response);
+        $this->assertNotEmpty($response->getResponse()[0]->getId());
+    }
 }

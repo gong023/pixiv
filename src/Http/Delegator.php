@@ -5,7 +5,6 @@ namespace Pixiv\Http;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Pixiv\Http\Exception\ServerErrorException;
-use Pixiv\Http\Exception\UnknownErrorException;
 use Pixiv\Http\Exception\ClientErrorException;
 use GuzzleHttp\Exception\ClientException as OriginClientException;
 use GuzzleHttp\Exception\ServerException as OriginServerException;
@@ -52,8 +51,6 @@ class Delegator
             throw new ClientErrorException($e->getMessage());
         } catch (OriginServerException $e) {
             throw new ServerErrorException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new UnknownErrorException($e->getMessage());
         }
     }
 }

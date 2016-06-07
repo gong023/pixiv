@@ -4,6 +4,7 @@ namespace Pixiv\Http\Domain;
 
 use Pixiv\Entity\Following;
 use Pixiv\Entity\Ranking;
+use Pixiv\Entity\Search;
 use Pixiv\Entity\Work\WorkContent;
 use Pixiv\Http\Delegator;
 use TinyConfig\TinyConfig;
@@ -52,5 +53,15 @@ class PublicApi
         $rawData = isset($r['response'][0]) ? $r['response'][0] : [];
 
         return new WorkContent($rawData);
+    }
+
+    public function search($params)
+    {
+        $contents = $this->delegator->get("/v1/search/works.json", $params, [
+            'Proxy-Connection' => 'keep-alive',
+            'Authorization'    => 'Bearer ' . TinyConfig::get('token'),
+        ])->getBody()->getContents();
+
+        return new Search(json_decode($contents, true));
     }
 }

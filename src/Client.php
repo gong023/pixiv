@@ -150,6 +150,46 @@ class Client
         return $this->ipixiv->getImage($url);
     }
 
+    /**
+     * @param $q
+     * @param string $mode
+     * @param int $perPage
+     * @param string $order
+     * @param string $sort
+     * @param bool $includeStats
+     * @param bool $includeSanityLevel
+     * @param string $imageSizes
+     * @param string $profileImageSizes
+     * @return Entity\Search
+     */
+    public function getSearchResult(
+        $q,
+        $mode               = 'tag',
+        $perPage            = 30,
+        $order              = 'desc',
+        $sort               = 'date',
+        $includeStats       = true,
+        $includeSanityLevel = true,
+        $imageSizes         = 'px_128x128,px_480mw,large',
+        $profileImageSizes  = 'px_170x170,px_50x50'
+    ) {
+        $params = [
+            'q'                  => $q,
+            'mode'               => $mode,
+            'perPage'            => $perPage,
+            'order'              => $order,
+            'sort'               => $sort,
+            'includeStats'       => $includeStats,
+            'includeSanityLevel' => $includeSanityLevel,
+            'imageSizes'         => $imageSizes,
+            'profileImageSizes'  => $profileImageSizes,
+        ];
+
+        return $this->retryWithToken(3, function () use ($params) {
+            return $this->publicApi->search($params);
+        });
+    }
+
     private function getApi($domain)
     {
         $klass = 'Pixiv\\Http\\Domain\\' . $domain;

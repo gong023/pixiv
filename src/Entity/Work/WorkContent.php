@@ -9,7 +9,7 @@ use TurmericSpice\ReadableAttributes;
 class WorkContent extends Entity
 {
     use ReadableAttributes {
-        mayHaveAsInt     as public getInt;
+        mayHaveAsInt     as public getId;
         mayHaveAsString  as public getTitle;
         mayHaveAsString  as public getCaption;
         mayHaveAsArray   as public getTags;
