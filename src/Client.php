@@ -6,6 +6,7 @@ use Pixiv\Http\Delegator;
 use Pixiv\Http\Domain\IPixiv;
 use Retry\Retry;
 use TinyConfig\TinyConfig;
+use Pixiv\Entity\Request;
 
 class Client
 {
@@ -24,19 +25,12 @@ class Client
      */
     private $ipixiv;
 
-    /**
-     * @var \ReflectionClass
-     */
-    private $reflection;
-
     public function __construct(
         $clientId, $clientSecret, $userName, $password, $deviceToken
     ) {
         $this->auth = $this->getApi('Auth');
         $this->publicApi = $this->getApi('PublicApi');
         $this->ipixiv = new IPixiv(new Delegator('', ['Referer' => IPixiv::REFERER]));
-
-        $this->reflection = new \ReflectionClass(__CLASS__);
 
         TinyConfig::set('initial_setting', [
             'client_id'     => $clientId,
@@ -57,47 +51,30 @@ class Client
     }
 
     /**
-     * @param int $page
-     * @param int $perPage
-     * @param string $mode
-     * @param string $includeStats
-     * @param string $includeSanityLevel
-     * @param string $imageSizes
-     * @param string $profileImageSizes
-     * @return \Pixiv\Entity\Ranking
+     * @param Request\RankingRequest $request
+     * @return Entity\Ranking
      */
-    public function getRankingAll(
-        $page               = 1,
-        $perPage            = 50,
-        $mode               = 'daily',
-        $includeStats       = 'true',
-        $includeSanityLevel = 'true',
-        $imageSizes         = 'px_128x128,px_480mw,large',
-        $profileImageSizes  = 'px_170x170,px_50x50'
-    ) {
-        $param = $this->migrateParameter(__FUNCTION__, func_get_args());
+    public function getRankingAll(Request\RankingRequest $request = null)
+    {
+        if ($request === null) {
+            $params = (new Request\RankingRequest())->toArray();
+        } else {
+            $params = $request->toArray();
+        }
 
-        return $this->retryWithToken(3, function() use ($param) {
-            return $this->publicApi->rankingAll($param);
+        return $this->retryWithToken(3, function() use ($params) {
+            return $this->publicApi->rankingAll($params);
         });
     }
 
     /**
-     * @param $id
-     * @param bool|true $includeStats
-     * @param bool|true $includeSanityLevel
-     * @param string $imageSizes
-     * @param string $profileImageSizes
-     * @return \Pixiv\Entity\Work\WorkContent
+     * @param Request\WorkRequest $request
+     * @return Entity\Work\WorkContent
      */
-    public function getWork(
-        $id,
-        $includeStats       = true,
-        $includeSanityLevel = true,
-        $imageSizes         = 'px_128x128,px_480mw,large',
-        $profileImageSizes  = 'px_170x170,px_50x50'
-    ) {
-        $param = $this->migrateParameter(__FUNCTION__, func_get_args());
+    public function getWork(Request\WorkRequest $request)
+    {
+        $id = $request->getId();
+        $param = $request->toArray();
 
         return $this->retryWithToken(3, function() use ($id, $param) {
             return $this->publicApi->work($id, $param);
@@ -105,23 +82,16 @@ class Client
     }
 
     /**
-     * @param int $page
-     * @param int $perPage
-     * @param bool $includeStats
-     * @param bool $includeSanityLevel
-     * @param string $imageSizes
-     * @param string $profileImageSizes
+     * @param Request\FollowingRequest $request
      * @return Entity\Following
      */
-    public function getFollowing(
-        $page               = 1,
-        $perPage            = 30,
-        $includeStats       = true,
-        $includeSanityLevel = true,
-        $imageSizes         = 'px_128x128,px_480mw,large',
-        $profileImageSizes  = 'px_170x170,px_50x50'
-    ) {
-        $params = $this->migrateParameter(__FUNCTION__, func_get_args());
+    public function getFollowing(Request\FollowingRequest $request = null)
+    {
+        if ($request === null) {
+            $params = (new Request\FollowingRequest())->toArray();
+        } else {
+            $params = $request->toArray();
+        }
 
         return $this->retryWithToken(3, function() use ($params) {
             return $this->publicApi->following($params);
@@ -138,29 +108,12 @@ class Client
     }
 
     /**
-     * @param $q
-     * @param string $mode
-     * @param int $perPage
-     * @param string $order
-     * @param string $sort
-     * @param bool $includeStats
-     * @param bool $includeSanityLevel
-     * @param string $imageSizes
-     * @param string $profileImageSizes
+     * @param Request\SearchRequest $request
      * @return Entity\Search
      */
-    public function getSearchResult(
-        $q,
-        $mode               = 'tag',
-        $perPage            = 30,
-        $order              = 'desc',
-        $sort               = 'date',
-        $includeStats       = true,
-        $includeSanityLevel = true,
-        $imageSizes         = 'px_128x128,px_480mw,large',
-        $profileImageSizes  = 'px_170x170,px_50x50'
-    ) {
-        $params = $this->migrateParameter(__FUNCTION__, func_get_args());
+    public function getSearchResult(Request\SearchRequest $request)
+    {
+        $params = $request->toArray();
 
         return $this->retryWithToken(3, function () use ($params) {
             return $this->publicApi->search($params);
@@ -175,27 +128,6 @@ class Client
         ]);
 
         return new $klass($delegator);
-    }
-
-    /**
-     * kuso
-     *
-     * @param $functionName
-     * @param $funcGetArgs
-     * @return array
-     */
-    private function migrateParameter($functionName, $funcGetArgs)
-    {
-        $migrated = [];
-        foreach ($this->reflection->getMethod($functionName)->getParameters() as $index => $param) {
-            if (isset($funcGetArgs[$index])) {
-                $migrated[$param->name] = $funcGetArgs[$index];
-            } else {
-                $migrated[$param->name] = $param->getDefaultValue();
-            }
-        }
-        
-        return $migrated;
     }
 
     private function retryWithToken($times, $proc)

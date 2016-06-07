@@ -2,6 +2,9 @@
 
 namespace Pixiv;
 
+use Pixiv\Entity\Request\SearchRequest;
+use Pixiv\Entity\Request\WorkRequest;
+
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -58,14 +61,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWorks()
     {
-        $response = self::$client->getWork(55603047);
+        $response = self::$client->getWork(new WorkRequest(['id' => 55603047]));
 
         $this->assertInstanceOf('\\Pixiv\\Entity\\Work\\WorkContent', $response);
     }
 
     public function testSearch()
     {
-        $response = self::$client->getSearchResult('アイカツ');
+        $response = self::$client->getSearchResult(new SearchRequest(['q' => 'アイカツ']));
 
         $this->assertInstanceOf('\\Pixiv\\Entity\\Search', $response);
         $this->assertNotEmpty($response->getResponse()[0]->getId());
